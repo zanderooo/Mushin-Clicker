@@ -34,7 +34,7 @@ Mushin is designed around three fundamental principles:
 ## 🚀 Getting Started
 
 1.  Navigate to the [**Releases**](https://github.com/zanderooo/Mushin-Clicker/releases/latest) page.
-2.  Download `Mushin.exe` from the latest release (`v0.0.1`).
+2.  Download `Mushin.exe` from the latest release.
 3.  Run it.
 
 > [!NOTE]
