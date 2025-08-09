@@ -1,75 +1,116 @@
 <div align="center">
-  <img src="assets/logo.png" alt="Mushin Logo" width="100"/>
-</div>
-
-<a href="https://github.com/zanderooo/Mushin-Clicker">
-  <img src="assets/header.svg" alt="Mushin (無心) - The art of effortless action."/>
-</a>
-
-<div align="center">
-  <p>
-    <a href="https://github.com/zanderooo/Mushin-Clicker/releases/latest">
-      <img src="https://img.shields.io/github/v/release/zanderooo/Mushin-Clicker?style=for-the-badge&color=89B4FA&labelColor=1E1E2E&logo=github" alt="Latest Release">
-    </a>
-    <a href="https://github.com/zanderooo/Mushin-Clicker/actions/workflows/build.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/zanderooo/Mushin-Clicker/build.yml?branch=main&style=for-the-badge&color=A6E3A1&labelColor=1E1E2E&logo=githubactions" alt="Build Status">
-    </a>
-    <a href="https://github.com/zanderooo/Mushin-Clicker/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/zanderooo/Mushin-Clicker?style=for-the-badge&color=F9E2AF&labelColor=1E1E2E" alt="License">
-    </a>
-  </p>
+<pre>
++-----------------------------------------------------------------------------+
+|                                                                             |
+|    M U S H I N   / /   無 心                                                |
+|                                                                             |
+|    A state of no-mind. An instrument of flow.                               |
+|                                                                             |
++-----------------------------------------------------------------------------+
+</pre>
 </div>
 
 <div align="center">
-  <img src="assets/screenshot.png" alt="Mushin Clicker Screenshot" width="700"/>
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/zanderooo/Mushin-Clicker/build.yml?branch=main&style=flat-square&color=A6E3A1&label=BUILD)](https://github.com/zanderooo/Mushin-Clicker/actions/workflows/build.yml)
+[![Latest Release](https://img.shields.io/github/v/release/zanderooo/Mushin-Clicker?style=flat-square&color=89B4FA&label=RELEASE)](https://github.com/zanderooo/Mushin-Clicker/releases/latest)
+[![License](https://img.shields.io/github/license/zanderooo/Mushin-Clicker?style=flat-square&color=F9E2AF&label=LICENSE)](https://github.com/zanderooo/Mushin-Clicker/blob/main/LICENSE)
+
 </div>
 
-<div align="center">
-  <img src="assets/divider.svg" />
-</div>
+```text
+// C O N C E P T
 
-In the pursuit of mastery, there is a state known as **Mushin (無心)** — a mind free from anger, fear, or ego. A mind without mind, where action becomes pure, effortless, and instinctual. This application is a tool built on that philosophy: to automate the mundane, so you can achieve a state of flow.
+Mushin is the martial arts term for a mind unburdened by thought or emotion,
+focused only on the present action. This tool is a digital reflection of that
+philosophy: a stateless, zero-configuration utility designed to eliminate
+repetitive tasks and facilitate a state of uninterrupted workflow. It does
+one thing, and it does it with precision.
 
-## ⇁ Features
+// S Y S T E M   S P E C I F I C A T I O N S
 
-| Feature                 | Description                                                  |
-| ----------------------- | ------------------------------------------------------------ |
-| `✨` **Aesthetic UI**     | A clean, modern interface designed for clarity and focus.    |
-| `🎚️` **Precision Control** | Fine-tune your Clicks Per Second with a smooth, responsive slider. |
-| `🖱️` **Total Versatility** | Choose between Left, Right, or Middle mouse button operations. |
-| `Hotkey Flow` **`F6`**   | A global hotkey to toggle clicking without ever leaving your active window. |
+┌──────────────────────────┬──────────────────────────────────────────────────┐
+│ ATTRIBUTE                │ VALUE                                            │
+├──────────────────────────┼──────────────────────────────────────────────────┤
+│ Version                  │ 1.0.0                                            │
+│ License                  │ MIT                                              │
+│ Author                   │ zanderooo                                        │
+│ Core Technology          │ Python 3.10+                                     │
+│ Interface                │ CustomTkinter                                    │
+│ System Hook              │ Pynput                                           │
+│ Global Hotkey            │ F6                                               │
+│ Status                   │ Stable                                           │
+└──────────────────────────┴──────────────────────────────────────────────────┘
 
-<div align="center">
-  <img src="assets/divider.svg" />
-</div>
+// F E A T U R E   S E T
 
-## 🚀 Get Started
+[+] DYNAMIC CPS CONTROL
+    A fluid slider allows for precise adjustment of Clicks Per Second from
+    1 to 100, updated in real-time.
 
-1.  Navigate to the [**Releases Page**](https://github.com/zanderooo/Mushin-Clicker/releases/latest).
-2.  Download `Mushin.exe`.
-3.  Run it. No installation needed.
+[+] MOUSE BUTTON SELECTIVITY
+    Full control over the click event source. Target the Left, Right,
+    or Middle mouse button via a dropdown menu.
 
-> [!NOTE]
-> Windows SmartScreen may show a warning as the app is not code-signed. This is standard for independent projects. Click `More info` → `Run anyway` to proceed.
+[+] GLOBAL HOTKEY ACTIVATION
+    Toggle the clicker's state from any application using the F6 key.
+    The process is system-wide, requiring no focus on the application window.
 
-<br>
+[+] STATELESS OPERATION
+    Mushin writes no configuration files and leaves no trace on your system.
+    Every session starts clean. What you see is what you get.
 
-<details>
-<summary><div align="center"><code>BUILDING FROM SOURCE</code></div></summary>
+[+] CROSS-PLATFORM CORE
+    Built with platform-agnostic libraries, ensuring the core logic is portable
+    and ready for future expansion to other operating systems.
 
-<br>
+[+] ZERO-DEPENDENCY EXECUTABLE
+    The final build is a single, self-contained .exe file that runs without
+    any external dependencies or installation.
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/zanderooo/Mushin-Clicker.git
-cd Mushin-Clicker
+// O P E R A T I O N A L   P R O C E D U R E
 
-# 2. Set up a virtual environment (Windows)
-python -m venv venv
-.\venv\Scripts\activate
+1. Navigate to the [Releases] page of this repository.
+2. Download the latest `Mushin.exe` binary.
+3. Execute the file. No installation is required.
+4. Configure parameters within the UI.
+5. Press [F6] to activate or deactivate the process.
 
-# 3. Install dependencies
-pip install -r requirements.txt
+[Releases]: https://github.com/zanderooo/Mushin-Clicker/releases/latest
 
-# 4. Run the application
-python src/__main__.py
+
+// B U I L D   P R O C E S S
+
+For developers wishing to compile the application from source.
+
+[1] CLONE REPOSITORY
+    git clone https://github.com/zanderooo/Mushin-Clicker.git
+    cd Mushin-Clicker
+
+[2] PREPARE ENVIRONMENT (Windows)
+    python -m venv venv
+    .\venv\Scripts\activate
+
+[3] INSTALL DEPENDENCIES
+    pip install -r requirements.txt
+
+[4] EXECUTE FROM SOURCE (for testing)
+    python src/__main__.py
+
+[5] COMPILE BINARY
+    pyinstaller --name Mushin --onefile --windowed ^
+    --add-data "assets;assets" --icon="assets/icon.ico" ^
+    src/__main__.py
+
+// C O R E   D E P E N D E N C I E S
+
+┌───────────────────┬───────────┬─────────────────────────────────────────────┐
+│ PACKAGE           │ VERSION   │ PURPOSE                                     │
+├───────────────────┼───────────┼─────────────────────────────────────────────┤
+│ customtkinter     │ 5.2.2     │ Modern graphical user interface toolkit     │
+│ pynput            │ 1.7.6     │ System-wide input monitoring and control    │
+│ Pillow            │ 10.3.0    │ Image processing for UI assets              │
+│ PyInstaller       │ 6.15.0+   │ Executable bundler (developer dependency)   │
+└───────────────────┴───────────┴─────────────────────────────────────────────┘
+
+
