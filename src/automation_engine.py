@@ -3,10 +3,11 @@ import threading
 from pynput import mouse, keyboard
 
 class AutomationEngine:
-    def __init__(self, update_status_callback):
+    def __init__(self, update_status_callback, on_stop_callback=None):
         self.mouse_controller = mouse.Controller()
         self.keyboard_controller = keyboard.Controller()
         self.update_status_callback = update_status_callback
+        self.on_stop_callback = on_stop_callback # New callback
 
         # General state
         self.is_running = threading.Event()
@@ -15,8 +16,8 @@ class AutomationEngine:
         # Clicker settings
         self.cps = 10.0
         self.mouse_button = mouse.Button.left
-        self.click_limit = 0  # 0 for infinite
-        self.target_position = None  # None for current cursor position
+        self.click_limit = 0
+        self.target_position = None
 
         # Macro settings
         self.macro_events = []
@@ -63,8 +64,9 @@ class AutomationEngine:
             time.sleep(event['delay'])
             
             if event['type'] == 'click':
+                button = mouse.Button[event['button_name']] # Recreate button object
                 self.mouse_controller.position = event['pos']
-                self.mouse_controller.click(event['button'], event['presses'])
+                self.mouse_controller.click(button, event['presses'])
             elif event['type'] == 'move':
                 self.mouse_controller.position = event['pos']
         
@@ -109,3 +111,6 @@ class AutomationEngine:
                 self.main_thread.join(timeout=0.2)
             self.update_status_callback("Idle.")
             print("INFO: Process stopped.")
+            
+            if self.on_stop_callback:
+                self.on_stop_callback()

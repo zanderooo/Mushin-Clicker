@@ -1,0 +1,9 @@
+{
+    "cps": 10,
+    "click_limit": "",
+    "mouse_button": "Left",
+    "position_mode": "Cursor",
+    "target_position": null,
+    "macro_events": [],
+    "sound_enabled": true
+}

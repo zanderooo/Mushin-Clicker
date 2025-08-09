@@ -2,26 +2,23 @@ import customtkinter as ctk
 import sys
 import platform
 
-# Import our custom Windows styling module
-try:
-    from windows_styles import apply_blur
-    STYLES_AVAILABLE = True
-except ImportError:
-    STYLES_AVAILABLE = False
-
-
 # --- Constants for Theming ---
 FONT_FAMILY = ("JetBrains Mono", "Consolas", "Courier New", "monospace")
-COLOR_PRIMARY = "#8A2BE2"  # Dark Violet / Purple
-COLOR_SECONDARY = "#4B0082" # Indigo / Deeper Purple
-COLOR_BACKGROUND = "#121212" # Almost Black
-COLOR_FOREGROUND = "#1E1E1E" # Dark Gray for frames
-COLOR_TEXT = "#E0E0E0" # Light Gray text
+COLOR_PRIMARY = "#8A2BE2"
+COLOR_SECONDARY = "#4B0082"
+COLOR_BACKGROUND = "#121212"
+COLOR_FOREGROUND = "#1E1E1E"
+COLOR_TEXT_ACTIVE = "#A6E3A1"
+COLOR_TEXT_IDLE = "#E0E0E0"
 
 class App(ctk.CTk):
     def __init__(self, main_app_logic):
         super().__init__()
         self.logic = main_app_logic
+        self._is_pulsing = False
+
+        # --- Create Tkinter variable here, after root window is created ---
+        self.sound_enabled = ctk.BooleanVar(value=self.logic.initial_sound_state)
 
         # --- Font Definition ---
         self.main_font = ctk.CTkFont(family=FONT_FAMILY[0], size=13)
@@ -31,25 +28,19 @@ class App(ctk.CTk):
 
         # --- Window Configuration ---
         self.title("Mushin")
-        self.geometry("450x550")
+        self.geometry("450x600")
         self.resizable(False, False)
-        
-        # We MUST set a background color, even if we make it transparent later
-        # This prevents flickering and visual artifacts.
         self.configure(fg_color=COLOR_BACKGROUND)
 
         # Apply styles after the window is fully drawn
-        # Using after(ms, func) is much more reliable
         self.after(100, self._apply_windows_styles)
-
 
         # --- Main Layout ---
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # --- Tab View Theming ---
-        self.tab_view = ctk.CTkTabview(self, 
-                                       fg_color="transparent",
+        # --- Tab View ---
+        self.tab_view = ctk.CTkTabview(self, fg_color="transparent",
                                        segmented_button_selected_color=COLOR_PRIMARY,
                                        segmented_button_unselected_color=COLOR_FOREGROUND,
                                        segmented_button_selected_hover_color=COLOR_SECONDARY)
@@ -62,21 +53,15 @@ class App(ctk.CTk):
         self.status_label = ctk.CTkLabel(self, text="Idle.", font=self.small_font, text_color="#888")
         self.status_label.grid(row=1, column=0, padx=20, pady=(0, 10), sticky="w")
         
-        # --- Create Tabs ---
         self._create_clicker_tab(self.tab_view.tab("Auto Clicker"))
         self._create_macro_tab(self.tab_view.tab("Macro Recorder"))
 
     def _apply_windows_styles(self):
-        """Applies modern visual styles using our dedicated module."""
-        if not STYLES_AVAILABLE:
-            print("INFO: Windows styles module not available. Skipping.")
-            return
-
+        if sys.platform != "win32": return
         try:
+            from windows_styles import apply_blur
             hwnd = self.winfo_id()
             apply_blur(hwnd)
-            # This is the magic trick: after applying blur, we make the
-            # Tkinter window background transparent so the blur shows through.
             self.wm_attributes("-transparentcolor", COLOR_BACKGROUND)
         except Exception as e:
             print(f"ERROR: Failed to apply window styles: {e}")
@@ -84,9 +69,6 @@ class App(ctk.CTk):
     def _create_styled_frame(self, parent):
         return ctk.CTkFrame(parent, fg_color="transparent")
 
-    # ... [POZOSTAŁA CZĘŚĆ KODU POZOSTAJE BEZ ZMIAN] ...
-    # Skopiuj i wklej resztę metod (_create_clicker_tab, _create_macro_tab, itd.)
-    # z poprzedniej wersji, ponieważ one się nie zmieniają.
     def _create_clicker_tab(self, tab):
         tab.grid_columnconfigure(0, weight=1)
         
@@ -137,7 +119,7 @@ class App(ctk.CTk):
         self.pos_label = ctk.CTkLabel(frame_pos, text="X:--- Y:---", font=self.value_font)
         self.pos_label.pack(side="right", padx=10)
 
-        # --- Hotkey ---
+        # --- Hotkey and Sound Feedback ---
         frame_hotkey = self._create_styled_frame(tab)
         frame_hotkey.grid(row=4, column=0, padx=10, pady=(20, 10), sticky="ew")
         self.hotkey_btn = ctk.CTkButton(frame_hotkey, text="Set Start/Stop Hotkey", font=self.main_font,
@@ -146,12 +128,17 @@ class App(ctk.CTk):
         self.hotkey_btn.pack(side="left")
         self.hotkey_label = ctk.CTkLabel(frame_hotkey, text=f"Current: {self.logic.hotkeys['toggle_app_str']}", font=self.main_font)
         self.hotkey_label.pack(side="left", padx=20)
+        
+        self.sound_checkbox = ctk.CTkCheckBox(frame_hotkey, text="", variable=self.sound_enabled, 
+                                              onvalue=True, offvalue=False, checkbox_width=20, checkbox_height=20,
+                                              fg_color=COLOR_PRIMARY, hover_color=COLOR_SECONDARY)
+        self.sound_checkbox.pack(side="right")
+        ctk.CTkLabel(frame_hotkey, text="Sound:", font=self.main_font).pack(side="right", padx=(0,5))
 
     def _create_macro_tab(self, tab):
         tab.grid_columnconfigure(0, weight=1)
         tab.grid_rowconfigure(1, weight=1)
         
-        # --- Controls ---
         frame_controls = self._create_styled_frame(tab)
         frame_controls.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         
@@ -170,10 +157,38 @@ class App(ctk.CTk):
                                        border_width=1)
         self.clear_btn.pack(side="left", expand=True, fill="x", padx=5)
 
-        # --- Event Display ---
         self.macro_textbox = ctk.CTkTextbox(tab, state="disabled", font=self.mono_font,
                                             fg_color=COLOR_FOREGROUND, border_color=COLOR_SECONDARY, border_width=1)
         self.macro_textbox.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+    def _pulse_status(self, pulse=True):
+        if not self._is_pulsing or not pulse:
+            self._is_pulsing = False
+            self.status_label.configure(text_color="#888")
+            return
+
+        current_color = self.status_label.cget("text_color")
+        next_color = COLOR_TEXT_ACTIVE if current_color == "#888" else "#888"
+        self.status_label.configure(text_color=next_color)
+        self.after(500, self._pulse_status)
+
+    def set_active_state(self, is_active: bool, mode: str):
+        if is_active:
+            self._is_pulsing = True
+            self._pulse_status()
+            if sys.platform == "win32":
+                try:
+                    import pywinstyles
+                    pywinstyles.change_header_color(self, color=COLOR_SECONDARY)
+                except: pass
+        else:
+            self._is_pulsing = False
+            self.status_label.configure(text_color="#888")
+            if sys.platform == "win32":
+                try:
+                    import pywinstyles
+                    pywinstyles.change_header_color(self, color=COLOR_BACKGROUND)
+                except: pass
 
     def update_cps_label(self, value):
         self.cps_value_label.configure(text=f"{float(value):.1f}")
@@ -181,7 +196,6 @@ class App(ctk.CTk):
     def update_hotkey_label(self, key_name, key_str):
         if key_name == 'toggle_app':
             self.hotkey_label.configure(text=f"Current: {key_str}")
-        # Add logic for other hotkeys if needed
 
     def update_macro_display(self, events):
         self.macro_textbox.configure(state="normal")
@@ -195,8 +209,8 @@ class App(ctk.CTk):
                 
                 if event['type'] == 'click':
                     pos_str = f"@ ({event['pos'][0]}, {event['pos'][1]})"
-                    details_str = f"{event['button'].name.upper()} {pos_str}"
-                else: # 'move'
+                    details_str = f"{event['button_name'].upper()} {pos_str}"
+                else:
                     details_str = f"TO: ({event['pos'][0]}, {event['pos'][1]})"
                 
                 line = f"{i+1:03d} | {delay_str} | {type_str} | {details_str}\n"
