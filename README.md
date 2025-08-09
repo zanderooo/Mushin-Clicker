@@ -61,7 +61,7 @@ python src/__main__.py
 
 # 5. Compile the final executable
 pyinstaller --name Mushin --onefile --windowed --add-data "assets;assets" --icon="assets/icon.ico" src/__main__.py
-
+```
 🗺️ The Path Ahead
 
 This is the foundational version of Mushin. The path forward is focused on expanding its quiet utility.
@@ -70,4 +70,4 @@ This is the foundational version of Mushin. The path forward is focused on expan
     Configurable Hotkeys: Allowing users to define their own activation key.
     Profiles: Saving and loading different configurations for various tasks.
 
-<div align="center"> <p><em>Crafted with focus.</em></p> </div> ```
+<div align="center"> <p><em>Crafted with focus.</em></p> </div>
