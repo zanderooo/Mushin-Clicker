@@ -2,15 +2,8 @@ import customtkinter as ctk
 import sys
 import platform
 
-# Import our custom Windows styling module
-try:
-    from windows_styles import apply_blur
-    STYLES_AVAILABLE = True
-except ImportError:
-    STYLES_AVAILABLE = False
-
-
 # --- Constants for Theming ---
+# Provide fallback fonts. The system will use the first one it finds.
 FONT_FAMILY = ("JetBrains Mono", "Consolas", "Courier New", "monospace")
 COLOR_PRIMARY = "#8A2BE2"  # Dark Violet / Purple
 COLOR_SECONDARY = "#4B0082" # Indigo / Deeper Purple
@@ -24,8 +17,8 @@ class App(ctk.CTk):
         self.logic = main_app_logic
 
         # --- Font Definition ---
-        self.main_font = ctk.CTkFont(family=FONT_FAMILY[0], size=13)
-        self.mono_font = ctk.CTkFont(family=FONT_FAMILY[1], size=12)
+        self.main_font = ctk.CTkFont(family=FONT_FAMILY[0], size=13) # Primary font
+        self.mono_font = ctk.CTkFont(family=FONT_FAMILY[1], size=12) # Fallback for code
         self.small_font = ctk.CTkFont(family=FONT_FAMILY[0], size=11, slant="italic")
         self.value_font = ctk.CTkFont(family=FONT_FAMILY[0], size=13, weight="bold")
 
@@ -33,15 +26,10 @@ class App(ctk.CTk):
         self.title("Mushin")
         self.geometry("450x550")
         self.resizable(False, False)
-        
-        # We MUST set a background color, even if we make it transparent later
-        # This prevents flickering and visual artifacts.
-        self.configure(fg_color=COLOR_BACKGROUND)
+        self.configure(fg_color=COLOR_BACKGROUND) # Set a solid background color first
 
-        # Apply styles after the window is fully drawn
-        # Using after(ms, func) is much more reliable
-        self.after(100, self._apply_windows_styles)
-
+        # --- Apply Modern Windows Styles (More Robustly) ---
+        self._apply_windows_styles()
 
         # --- Main Layout ---
         self.grid_columnconfigure(0, weight=1)
@@ -67,26 +55,38 @@ class App(ctk.CTk):
         self._create_macro_tab(self.tab_view.tab("Macro Recorder"))
 
     def _apply_windows_styles(self):
-        """Applies modern visual styles using our dedicated module."""
-        if not STYLES_AVAILABLE:
-            print("INFO: Windows styles module not available. Skipping.")
-            return
+        """Applies modern visual styles to the window if on Windows 11."""
+        if sys.platform != "win32" or int(platform.release()) < 10:
+            return # Styles only work on Windows 10/11
 
         try:
-            hwnd = self.winfo_id()
-            apply_blur(hwnd)
-            # This is the magic trick: after applying blur, we make the
-            # Tkinter window background transparent so the blur shows through.
-            self.wm_attributes("-transparentcolor", COLOR_BACKGROUND)
-        except Exception as e:
-            print(f"ERROR: Failed to apply window styles: {e}")
+            import pywinstyles
+            # Try different styles for broader compatibility
+            # 'mica' is often more reliable than 'acrylic'
+            for style in ["mica", "acrylic", "transparent"]:
+                try:
+                    pywinstyles.apply_style(self, style)
+                    print(f"INFO: Applied window style '{style}'.")
+                    # Make the main frame background transparent to see the effect
+                    self.configure(fg_color="transparent")
+                    # Style the window bar
+                    pywinstyles.change_header_color(self, color=COLOR_BACKGROUND)
+                    pywinstyles.change_border_color(self, color=COLOR_SECONDARY)
+                    return # Stop after the first successful style application
+                except Exception as e:
+                    print(f"WARNING: Failed to apply style '{style}': {e}")
+            
+            # If all styles fail, revert to a solid color
+            print("WARNING: All transparency styles failed. Using solid background.")
+            self.configure(fg_color=COLOR_BACKGROUND)
+            
+        except (ImportError, OSError) as e:
+            print(f"WARNING: pywinstyles could not be used: {e}. Transparency disabled.")
+            self.configure(fg_color=COLOR_BACKGROUND)
 
     def _create_styled_frame(self, parent):
         return ctk.CTkFrame(parent, fg_color="transparent")
 
-    # ... [POZOSTAŁA CZĘŚĆ KODU POZOSTAJE BEZ ZMIAN] ...
-    # Skopiuj i wklej resztę metod (_create_clicker_tab, _create_macro_tab, itd.)
-    # z poprzedniej wersji, ponieważ one się nie zmieniają.
     def _create_clicker_tab(self, tab):
         tab.grid_columnconfigure(0, weight=1)
         
