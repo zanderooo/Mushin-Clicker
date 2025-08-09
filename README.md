@@ -40,22 +40,9 @@ Mushin is designed around three fundamental principles:
 > [!NOTE]
 > Windows SmartScreen may show a warning as the app is not code-signed. This is standard for small, independent projects. Click `More info` → `Run anyway` to proceed.
 
-## 🗺️ The Path Ahead
+## 🛠️ Building From Source
 
-This is the foundational version of Mushin. The path forward is focused on expanding its quiet utility.
-
--   [ ] **Linux Support:** Porting the application for native execution on Linux distributions.
--   [ ] **Configurable Hotkeys:** Allowing users to define their own activation key.
--   [ ] **Profiles:** Saving and loading different configurations for various tasks.
-
-<br>
-
-<details>
-<summary><div align="center">BUILDING FROM SOURCE</div></summary>
-
-<br>
-
-To compile the application yourself, follow these steps.
+For developers or users who wish to compile the application themselves.
 
 ```bash
 # 1. Clone the repository
@@ -75,6 +62,12 @@ python src/__main__.py
 # 5. Compile the final executable
 pyinstaller --name Mushin --onefile --windowed --add-data "assets;assets" --icon="assets/icon.ico" src/__main__.py
 
-</details>
+🗺️ The Path Ahead
 
-<div align="center"> <p>Crafted with focus.</p> </div> ```
+This is the foundational version of Mushin. The path forward is focused on expanding its quiet utility.
+
+    Linux Support: Porting the application for native execution on Linux distributions.
+    Configurable Hotkeys: Allowing users to define their own activation key.
+    Profiles: Saving and loading different configurations for various tasks.
+
+<div align="center"> <p><em>Crafted with focus.</em></p> </div> ```
