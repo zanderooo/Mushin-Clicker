@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+ENV/
+env/
+pip-selfcheck.json
+
+# Build artifacts
+build/
+dist/
+*.spec
+*.egg-info/
