@@ -1,0 +1,53 @@
+<svg fill="none" width="800" height="150" xmlns="http://www.w3.org/2000/svg">
+    <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@400&display=swap');
+                .container {
+                    font-family: 'JetBrains Mono', 'Noto Sans JP', monospace;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    text-align: center;
+                    color: #c9d1d9; /* Dark theme text color */
+                }
+                .title-container {
+                    display: flex;
+                    align-items: baseline;
+                    justify-content: center;
+                }
+                .title {
+                    font-size: 52px;
+                    font-weight: 700;
+                    letter-spacing: -2px;
+                }
+                .japanese {
+                    font-size: 24px;
+                    font-weight: 400;
+                    margin-left: 15px;
+                    color: #8b949e; /* Dimmed color */
+                }
+                .tagline {
+                    font-size: 18px;
+                    font-style: italic;
+                    margin-top: -5px;
+                    color: #8b949e;
+                }
+                /* Light theme adjustments */
+                @media (prefers-color-scheme: light) {
+                    .container { color: #24292f; }
+                    .japanese, .tagline { color: #57606a; }
+                }
+            </style>
+            <div class="container">
+                <div class="title-container">
+                    <div class="title">Mushin</div>
+                    <div class="japanese">(無心)</div>
+                </div>
+                <div class="tagline">The art of effortless action.</div>
+            </div>
+        </div>
+    </foreignObject>
+</svg>
