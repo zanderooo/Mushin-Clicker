@@ -75,4 +75,6 @@ python src/__main__.py
 # 5. Compile the final executable
 pyinstaller --name Mushin --onefile --windowed --add-data "assets;assets" --icon="assets/icon.ico" src/__main__.py
 
-</details><div align="center"> <p>Crafted with focus.</p> </div> ```
+</details>
+
+<div align="center"> <p>Crafted with focus.</p> </div> ```
