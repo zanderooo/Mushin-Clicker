@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import sys
 import platform
+import os
 
 # --- Constants for Theming ---
 FONT_FAMILY = ("JetBrains Mono", "Consolas", "Courier New", "monospace")
@@ -31,6 +32,15 @@ class App(ctk.CTk):
         self.geometry("450x600")
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BACKGROUND)
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+        icon_path = os.path.join(base_path, "assets", "icon.ico")
+        try:
+            self.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Could not set icon: {e}")
 
         # Apply styles after the window is fully drawn
         self.after(100, self._apply_windows_styles)
