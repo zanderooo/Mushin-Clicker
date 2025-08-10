@@ -6,13 +6,30 @@ import customtkinter as ctk
 if sys.platform == "win32":
     import winsound
 
+from pathlib import Path
 from pynput import mouse, keyboard
+
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from automation_engine import AutomationEngine
 from gui import App
 
-CONFIG_FILE = "mushin_config.json"
+# ---------------------------
+# CONFIG FILE LOCATION SETUP
+# ---------------------------
+APP_NAME = "Mushin"
+
+if sys.platform == "win32":
+    base_config_dir = Path(os.getenv("APPDATA")) / APP_NAME
+else:
+    # ~/.config/Mushin on Linux/Mac
+    base_config_dir = Path(os.path.expanduser("~")) / ".config" / APP_NAME
+
+# Make sure the config directory exists
+base_config_dir.mkdir(parents=True, exist_ok=True)
+
+CONFIG_FILE = base_config_dir / "mushin_config.json"
+
 
 class MainApplication:
     def __init__(self):
@@ -25,7 +42,7 @@ class MainApplication:
             'toggle_record_str': 'F7',
         }
         
-        # We only store the initial state here. The Tkinter variable is in the App.
+        # Initial sound checkbox state
         self.initial_sound_state = True
 
         self.app = App(self)
@@ -46,7 +63,6 @@ class MainApplication:
         self.app.destroy()
 
     def _play_sound(self, sound_type: str):
-        # Query the variable from the App object
         if not self.app.sound_enabled.get() or sys.platform != "win32":
             return
         
@@ -151,8 +167,10 @@ class MainApplication:
         self.update_status(f"Press any key to set as the new hotkey...")
 
     def _set_new_hotkey(self, key):
-        try: key_str = key.char
-        except AttributeError: key_str = f"{key}".replace("Key.", "")
+        try:
+            key_str = key.char
+        except AttributeError:
+            key_str = f"{key}".replace("Key.", "")
         
         self.hotkeys[self.hotkey_to_bind] = key
         self.hotkeys[f"{self.hotkey_to_bind}_str"] = key_str
@@ -178,13 +196,13 @@ class MainApplication:
         try:
             with open(CONFIG_FILE, 'w') as f:
                 json.dump(settings, f, indent=4)
-            print("INFO: Settings saved.")
+            print(f"INFO: Settings saved to {CONFIG_FILE}")
         except Exception as e:
             print(f"ERROR: Could not save settings. {e}")
 
     def load_settings(self):
         try:
-            if os.path.exists(CONFIG_FILE):
+            if CONFIG_FILE.exists():
                 with open(CONFIG_FILE, 'r') as f:
                     settings = json.load(f)
                 
@@ -207,7 +225,7 @@ class MainApplication:
                 
                 self.app.sound_enabled.set(settings.get('sound_enabled', True))
 
-                print("INFO: Settings loaded.")
+                print(f"INFO: Settings loaded from {CONFIG_FILE}")
         except Exception as e:
             print(f"ERROR: Could not load settings. {e}")
 
@@ -216,6 +234,7 @@ class MainApplication:
         self.global_listener.stop()
         if self.mouse_listener and self.mouse_listener.is_alive():
             self.mouse_listener.stop()
+
 
 if __name__ == "__main__":
     main_app = MainApplication()
